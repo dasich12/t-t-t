@@ -2,7 +2,7 @@ fun strToIntSet(value: String): Set<Int> {
     return value.map { it.toString().toInt() }.toSet()
 }
 
-class State(x_values: String, o_values: String) {
+open class State(x_values: String, o_values: String) {
     val x = strToIntSet(x_values)
     val o = strToIntSet(o_values)
     private fun check(values: Set<Int>): Boolean {
@@ -23,11 +23,17 @@ class State(x_values: String, o_values: String) {
     }
 }
 
+class NextTurn(x_values: String, o_values: String): State(x_values, o_values){
+    fun init_moves(){
+        // определяем все свободные ячейки
+    }
+    var moves_variants = init_moves()
+}
+
 fun main(args: Array<String>) {
     val a = State("123", "45")
     val b = State("45", "369")
 
     println(a.check_winner())
     println(b.check_winner())
-    println("Hello world")
 }
