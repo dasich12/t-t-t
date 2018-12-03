@@ -7,8 +7,8 @@ fun strToIntSet(value: String): Set<Int> {
 }
 
 open class State(x_values: String, o_values: String) {
-    val x: Set<Int> = strToIntSet(x_values)
-    val o: Set<Int> = strToIntSet(o_values)
+    var x: Set<Int> = strToIntSet(x_values)
+    var o: Set<Int> = strToIntSet(o_values)
     private fun check(values: Set<Int>): Boolean {
         if (values.containsAll(setOf(1, 2, 3)) || values.containsAll(setOf(8, 0, 4)) ||
                 values.containsAll(setOf(7, 6, 5)) || values.containsAll(setOf(1, 8, 7)) ||
@@ -35,7 +35,8 @@ open class State(x_values: String, o_values: String) {
     }
 
     private fun rotate(x_set: Set<Int>, o_set: Set<Int>): Pair<Set<Int>, Set<Int>> {
-        return Pair(x_set.map { ((it + 1) % 8) + 1 }.toSet(), o_set.map { ((it + 1) % 8) + 1 }.toSet())
+        return Pair(x_set.map {  if (it>0) ((it + 1) % 8) + 1 else 0 }.toSet(),
+                    o_set.map {  if (it>0) ((it + 1) % 8) + 1 else 0 }.toSet())
     }
 
 
@@ -89,41 +90,95 @@ open class State(x_values: String, o_values: String) {
     }
 
     override final fun hashCode() = super.hashCode()
+
+    override fun toString() = "(x=$x, o=$o ${check_winner()})"
 }
 
-class NextTurn(x_values: String, o_values: String) : State(x_values, o_values) {
+class NextTurn(x_values: String = "", o_values: String = "") : State(x_values, o_values) {
     fun init_moves() {
         // определяем все свободные ячейки
     }
+    fun get_empty_cells():Set<Int>{
+        return setOf(0, 1, 2, 3, 4, 5, 6, 7, 8).subtract(this.x).subtract(this.o)
+    }
 
     var moves_variants = init_moves()
+
+    fun copy(add_val: Int?): NextTurn {
+
+        val next = NextTurn(x_values = this.x.joinToString(separator = ""),
+                o_values = this.o.joinToString(separator = ""))
+        if (add_val != null)
+            if (next.o.size < next.x.size)
+                next.o += add_val
+            else
+                next.x += add_val
+        return next
+    }
+
+}
+
+
+class AllTurns {
+    fun generate_all_turns(): MutableList<MutableList<NextTurn>> {
+        val result = mutableListOf(mutableListOf(NextTurn()))
+
+        for (i in 1..9) { // Номер хода
+            val prev = result.last()
+            val next: MutableList<NextTurn> = mutableListOf<NextTurn>()
+            for (state in prev) {
+                if (state.check_winner() == null) {
+                    state.get_empty_cells().forEach {
+                        // определяем чей ход
+                        val new_state = state.copy(add_val = it)
+
+                        var flag = true
+                        for (item in next) {
+                            if (item == new_state)
+                                flag = false
+                        }
+                        if (flag)
+                            next.add(new_state)
+
+                    }
+                }
+            }
+            result.add(next)
+        }
+        return result
+    }
+
+    var turns = generate_all_turns()
 }
 
 fun main(args: Array<String>) {
-    val a = State("1", "2")
-
-    val b = State("1", "2")
-    val c = State("3", "4")
-    val d = State("5", "6")
-    val e = State("7", "8")
-
-    val f = State("1", "8")
-    val g = State("7", "6")
-    val h = State("5", "4")
-    val i = State("3", "2")
+//    val a = State("0", "14")
+//
+//    val b = State("0", "23")
+//    val c = State("3", "4")
+//    val d = State("5", "6")
+//    val e = State("7", "8")
+//
+//    val f = State("1", "8")
+//    val g = State("7", "6")
+//    val h = State("5", "4")
+//    val i = State("3", "2")
 
 //    println(a.check_winner())
 //    println(b.check_winner())
 //    println(a==b)
 //    println(a==c)
 //    println(b==c)
-    println(a == b)
-    println(a == c)
-    println(a == d)
-    println(a == e)
+//    println(a == b)
+//    println(a == c)
+//    println(a == d)
+//    println(a == e)
+//
+//    println(a == f)
+//    println(a == g)
+//    println(a == h)
+//    println(a == i)
 
-    println(a == f)
-    println(a == g)
-    println(a == h)
-    println(a == i)
+    val turns = AllTurns()
+    println(turns.turns)
 }
