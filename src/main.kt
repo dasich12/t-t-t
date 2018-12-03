@@ -26,6 +26,14 @@ open class State(x_values: String, o_values: String) {
         return null
     }
 
+    fun get_center():Char?{
+        if (x.contains(0))
+            return 'x'
+        if (o.contains(0))
+            return 'o'
+        return null
+    }
+
     private fun rotate(x_set: Set<Int>, o_set: Set<Int>): Pair<Set<Int>, Set<Int>> {
         return Pair(x_set.map { ((it + 1) % 8) + 1 }.toSet(), o_set.map { ((it + 1) % 8) + 1 }.toSet())
     }
@@ -58,6 +66,8 @@ open class State(x_values: String, o_values: String) {
             return false
         val second = other as State
         if (this.x.size != second.x.size || (this.o.size != second.o.size))
+            return false
+        if (this.get_center()!= second.get_center())
             return false
 
         var pair = Pair(second.x, second.o)
