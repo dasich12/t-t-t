@@ -3,10 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Console Output</title>
+
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Dancing+Script);
+        body{
+            font-family:monospace;
+            background-color: #000;
+            color:green;
+        }
+        .tictactoe-board{
+            width:410px;
+            margin:0 auto;
+        }
+        .board-row{
+            clear:both;
+            margin:0 auto;
+            border-bottom:5px solid green;
+        }
+        .board-row:first-of-type{
+            border-bottom:0;
+        }
+        .board-cell{
+            float:left;
+            font-size:8rem;
+            padding: 0 28px 0 28px;
+            cursor:pointer;
+        }
+        .board-row > .board-cell{
+            border-right:5px solid green;
+        }
+        .board-row > .board-cell:last-of-type{
+            border-right:0;
+        }
+    </style>
 </head>
 <body>
+
+
+<div class="tictactoe-board">
+
+    <div class="board-row">
+        <div class="board-cell cell-0-0">&nbsp;</div>
+        <div class="board-cell cell-0-1">&nbsp;</div>
+        <div class="board-cell cell-0-2">&nbsp;</div>
+    </div>
+    <div class="board-row">
+        <div class="board-cell cell-1-0">&nbsp;</div>
+        <div class="board-cell cell-1-1">&nbsp;</div>
+        <div class="board-cell cell-1-2">&nbsp;</div>
+    </div>
+    <div class="board-row">
+        <div class="board-cell cell-2-0">&nbsp;</div>
+        <div class="board-cell cell-2-1">&nbsp;</div>
+        <div class="board-cell cell-2-2">&nbsp;</div>
+    </div>
+
+</div>
 
 <script type="text/javascript" src="out/production/t-t-t/lib/kotlin.js"></script>
 <script type="text/javascript" src="out/production/t-t-t/t-t-t.js"></script>
 </body>
 </html>
+

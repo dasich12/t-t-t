@@ -107,7 +107,7 @@ class NextTurn(x_values: String = "", o_values: String = "") : State(x_values, o
     fun copy(add_val: Int?): NextTurn {
 
         val next = NextTurn(x_values = this.x.joinToString(separator = ""),
-                o_values = this.o.joinToString(separator = ""))
+                            o_values = this.o.joinToString(separator = ""))
         if (add_val != null)
             if (next.o.size < next.x.size)
                 next.o += add_val
