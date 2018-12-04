@@ -9,6 +9,7 @@ fun strToIntSet(value: String): Set<Int> {
 open class State(x_values: String, o_values: String) {
     var x: Set<Int> = strToIntSet(x_values)
     var o: Set<Int> = strToIntSet(o_values)
+
     private fun check(values: Set<Int>): Boolean {
         if (values.containsAll(setOf(1, 2, 3)) || values.containsAll(setOf(8, 0, 4)) ||
                 values.containsAll(setOf(7, 6, 5)) || values.containsAll(setOf(1, 8, 7)) ||
@@ -26,7 +27,7 @@ open class State(x_values: String, o_values: String) {
         return null
     }
 
-    fun get_center():Char?{
+    fun get_center(): Char? {
         if (x.contains(0))
             return 'x'
         if (o.contains(0))
@@ -34,17 +35,15 @@ open class State(x_values: String, o_values: String) {
         return null
     }
 
+
     private fun rotate(x_set: Set<Int>, o_set: Set<Int>): Pair<Set<Int>, Set<Int>> {
-        return Pair(x_set.map {  if (it>0) ((it + 1) % 8) + 1 else 0 }.toSet(),
-                    o_set.map {  if (it>0) ((it + 1) % 8) + 1 else 0 }.toSet())
+        fun rotate_point(point: Int): Int = if (point > 0) ((point + 1) % 8) + 1 else 0
+        return Pair(x_set.map { rotate_point(it) }.toSet(), o_set.map { rotate_point(it) }.toSet())
     }
 
 
     private fun mirror(x_set: Set<Int>, o_set: Set<Int>): Pair<Set<Int>, Set<Int>> {
         fun mirror_one(set: Set<Int>): Set<Int> {
-            //        2-8
-            //        3-7
-            //        4-6
             var new: Set<Int> = setOf()
             set.forEach {
                 when (it) {
@@ -68,7 +67,7 @@ open class State(x_values: String, o_values: String) {
         val second = other as State
         if (this.x.size != second.x.size || (this.o.size != second.o.size))
             return false
-        if (this.get_center()!= second.get_center())
+        if (this.get_center() != second.get_center())
             return false
 
         var pair = Pair(second.x, second.o)
@@ -98,7 +97,8 @@ class NextTurn(x_values: String = "", o_values: String = "") : State(x_values, o
     fun init_moves() {
         // определяем все свободные ячейки
     }
-    fun get_empty_cells():Set<Int>{
+
+    fun get_empty_cells(): Set<Int> {
         return setOf(0, 1, 2, 3, 4, 5, 6, 7, 8).subtract(this.x).subtract(this.o)
     }
 
@@ -152,33 +152,6 @@ class AllTurns {
 }
 
 fun main(args: Array<String>) {
-//    val a = State("0", "14")
-//
-//    val b = State("0", "23")
-//    val c = State("3", "4")
-//    val d = State("5", "6")
-//    val e = State("7", "8")
-//
-//    val f = State("1", "8")
-//    val g = State("7", "6")
-//    val h = State("5", "4")
-//    val i = State("3", "2")
-
-//    println(a.check_winner())
-//    println(b.check_winner())
-//    println(a==b)
-//    println(a==c)
-//    println(b==c)
-//    println(a == b)
-//    println(a == c)
-//    println(a == d)
-//    println(a == e)
-//
-//    println(a == f)
-//    println(a == g)
-//    println(a == h)
-//    println(a == i)
-
     val turns = AllTurns()
     println(turns.turns)
 }
