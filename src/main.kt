@@ -122,7 +122,6 @@ class NextTurn(x_values: String = "", o_values: String = "") : State(x_values, o
 class AllTurns {
     fun generate_all_turns(): MutableList<MutableList<NextTurn>> {
         val result = mutableListOf(mutableListOf(NextTurn()))
-
         for (i in 1..9) { // Номер хода
             val prev = result.last()
             val next: MutableList<NextTurn> = mutableListOf<NextTurn>()
@@ -139,7 +138,6 @@ class AllTurns {
                         }
                         if (flag)
                             next.add(new_state)
-
                     }
                 }
             }
@@ -147,7 +145,6 @@ class AllTurns {
         }
         return result
     }
-
     var turns = generate_all_turns()
 }
 
