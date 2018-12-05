@@ -1,3 +1,6 @@
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLElement
+import kotlin.browser.document
 // 1 2 3
 // 8 0 4
 // 7 6 5
@@ -6,7 +9,7 @@ fun strToIntSet(value: String): Set<Int> {
     return value.map { it.toString().toInt() }.toSet()
 }
 
-open class State(x_values: String, o_values: String) {
+open class State(x_values: String="", o_values: String="") {
     var x: Set<Int> = strToIntSet(x_values)
     var o: Set<Int> = strToIntSet(o_values)
 
@@ -88,6 +91,10 @@ open class State(x_values: String, o_values: String) {
         return false
     }
 
+    fun get_empty_cells(): Set<Int> {
+        return setOf(0, 1, 2, 3, 4, 5, 6, 7, 8).subtract(this.x).subtract(this.o)
+    }
+
     override final fun hashCode() = super.hashCode()
 
     override fun toString() = "(x=$x, o=$o ${check_winner()})"
@@ -98,9 +105,7 @@ class NextTurn(x_values: String = "", o_values: String = "") : State(x_values, o
         // определяем все свободные ячейки
     }
 
-    fun get_empty_cells(): Set<Int> {
-        return setOf(0, 1, 2, 3, 4, 5, 6, 7, 8).subtract(this.x).subtract(this.o)
-    }
+
 
     var moves_variants = init_moves()
 
@@ -148,7 +153,59 @@ class AllTurns {
     var turns = generate_all_turns()
 }
 
-fun main(args: Array<String>) {
-    val turns = AllTurns()
-    println(turns.turns)
+//val state:State = State()
+
+
+
+fun click(btn: Int, state: State) {
+    val emptycell = state.get_empty_cells()
+    if (btn in emptycell && state.check_winner() == null) {
+        val cell = document.getElementById("button_$btn")
+        if (state.o.size < state.x.size) {
+            state.o += btn
+            cell?.textContent = "o"
+        } else {
+            state.x += btn
+            cell?.textContent = "x"
+        }
+
+    }
+    val result = state.check_winner()
+    if (result != null || state.get_empty_cells() == emptySet<Int>()) {
+        val message = document.getElementById("message")
+        val msg: String
+        when (result) {
+            'x' -> msg = "Победил игрок 1"
+            'o' -> msg = "Победил игрок 2"
+            else -> msg = "Ничья"
+        }
+
+
+        message?.innerHTML = "Игра окончена </br> $msg <div id='try-again'>Попробовать еще</div>"
+        val again = document.getElementById("try-again")
+        again?.addEventListener("click", {
+            message?.innerHTML = ""
+            state.x = emptySet<Int>()
+            state.o = emptySet<Int>()
+
+            for (button in 0..8) {
+                val button_element = document.getElementById("button_$button")
+                button_element?.innerHTML = "&nbsp;"
+            }
+
+        })
+    }
 }
+
+fun main(args: Array<String>) {
+    val state = State()
+
+    for (button in 0..8){
+        val button_element = document.getElementById("button_$button")
+        button_element?.addEventListener("click", {click(button, state)})
+    }
+
+//    val turns = AllTurns()
+//    println(turns.turns)
+}
+
